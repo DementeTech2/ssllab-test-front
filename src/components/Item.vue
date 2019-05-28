@@ -25,7 +25,8 @@
         props: ["revision"],
         methods: {
             openModal() {
-                console.log(this.revision.ID) //eslint-disable-line
+                this.$store.dispatch("selectRevision", this.revision.ID)
+                this.$bvModal.show("modal-details")
             }
         },
         computed: {

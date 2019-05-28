@@ -2,6 +2,7 @@
   <div id="app">
     <Header />
     <Grid />
+    <Modal />
   </div>
 </template>
 
@@ -10,13 +11,15 @@
   import 'bootstrap-vue/dist/bootstrap-vue.css'
   import Header from './components/Header.vue'
   import Grid from './components/Grid.vue'
+  import Modal from './components/Modal.vue'
   import { setInterval, clearInterval } from 'timers';
 
   export default {
     name: 'app',
     components: {
       Header,
-      Grid
+      Grid,
+      Modal
     },
     created() {
       if(!this.interval) {

@@ -6,6 +6,7 @@ import api from './api'
 Vue.use(Vuex)
 
 const state = {
+    selectedRevision: false,
     grid: {
         error: false,
         loading: false,
@@ -19,6 +20,9 @@ const state = {
 
 
 const actions = {
+    selectRevision({commit}, selectedId) {
+        commit("setRevId", selectedId)
+    },
     fetchDomains({commit}) {
         commit("gridLoading", true);
         api.fetchDomains()
@@ -48,6 +52,9 @@ const actions = {
 
 
 const mutations = {
+    setRevId(state, id) {
+        state.selectedRevision = id;
+    },
     gridLoading(state, loading) {
         state.grid.loading = loading;
     },
