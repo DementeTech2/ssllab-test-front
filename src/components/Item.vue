@@ -1,20 +1,20 @@
 <template>
     <b-col sm="12" lg="4" class="domain-item">
-        <div class="item-header" v-bind:style="{ backgroundImage: bgLogo() }">
-            <h3>{{domain}}</h3>
-            <h6>{{title}}</h6>
+        <div class="item-header" v-bind:style="{ backgroundImage: bgLogo }" @click="openModal">
+            <h3>{{revision.Domain}}</h3>
+            <h6>{{revision.Title || "&nbsp;"}}</h6>
         </div>
-        <b-row class="item-body">
+        <b-row class="item-body" @click="openModal">
             <b-col sm="9" class="item-details">
-                <span> {{ servers.length }} servers. </span> <br />
-                <span class="small">{{startDate | fromNow }}</span>
+                <span> {{ revision.Servers ? revision.Servers.length : 0 }} servers. </span> <br />
+                <span class="small">{{ revision.EndTime | fromNow }}</span>
             </b-col>
             <b-col sm="3" class="grade">
-                <b-spinner v-if="sslGrade == ''" type="grow" variant="secondary" style="width: 1.5rem; height: 1.5rem;" small></b-spinner>
-                <span v-else>{{sslGrade}}</span>
+                <b-spinner v-if="revision.SslGrade == ''" type="grow" variant="secondary" style="width: 1.5rem; height: 1.5rem;" small></b-spinner>
+                <span v-else>{{revision.SslGrade}}</span>
             </b-col>
         </b-row>
-        <b-progress height="5px" :value="calcProg()" :max="100" animated></b-progress>
+        <b-progress :variant="variantProg" :animated="serverProgress < 100" height="5px" :value="serverProgress" :max="100" ></b-progress>
     </b-col>
 </template>
 
@@ -22,40 +22,47 @@
     import moment from 'moment'
     export default {
         name: 'Item',
-        data() {
-            return {
-                domain: "alkosto.com.co",
-                title: "La tiende del barrio",
-                logo: "https://media.aws.alkosto.com/media/ALKOSTO/contenido/logo-alkosto-rwd-Pro201709.png",
-                startDate: 1558909341000,
-                sslGrade: "B",
-                servers: [
-                    {progress: 100},
-                    {progress: 100},
-                    {progress: 50},
-                    {progress: 0},
-                    {progress: 0},
-                    {progress: 0}
-                ]
+        props: ["revision"],
+        methods: {
+            openModal() {
+                console.log(this.revision.ID) //eslint-disable-line
             }
         },
-        methods: {
-            clicked() {
-                this.counter = Math.random() * this.max;
+        computed: {
+            serverProgress () {
+                if (this.revision.Servers){
+                    let total = this.revision.Servers.map(el => el.Progress).reduce((acc, elem) => acc + elem, 0)
+                    return total / this.revision.Servers.length
+                }
+                return 100
+            },
+            variantProg() {
+
+                switch (this.revision.Status) {
+                    case 'in_progress':
+                        return 'info'
+                    case 'ready':
+                        return 'success'
+                    case 'error':
+                        return 'danger'
+                }
+
+                return 'info'
             },
             bgLogo(){
-                if (this.logo == '') {
+                if (this.revision.Logo == '') {
                     return '';
                 }
-                return 'linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 40%), url("'+this.logo+'")'
-            },
-            calcProg(){
-                return this.servers.reduce((acc, elem) => acc + elem.progress, 0) / this.servers.length
+                return 'linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 40%), url("'+this.revision.Logo+'")'
             }
         },
         filters: {
             fromNow: function (date) {
-                return moment(date).fromNow();
+                let theDate = moment(date);
+                if (theDate.unix() < 1000) {
+                    return "In progress..."
+                }
+                return theDate.fromNow();
             }
         }
     }
@@ -77,6 +84,8 @@
         background-repeat: no-repeat;
         background-position: right;
         background-size: auto 100%;
+
+        cursor: pointer;
     }
 
     .domain-item .item-header h3,
@@ -93,6 +102,8 @@
         padding-top: 0px;
         margin:0;
         box-shadow: 2px 12px 15px gray;
+
+        cursor: pointer;
     }
 
     .domain-item .item-body .item-details {

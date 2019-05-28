@@ -1,45 +1,7 @@
 <template>
   <b-container>
       <b-row>
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
+          <Item v-for="item in items" v-bind:key="item.ID" :revision="item" />
       </b-row>
   </b-container>
 </template>
@@ -50,6 +12,11 @@
         name: 'Grid',
         components: {
             Item
+        },
+        computed: {
+            items () {
+                return this.$store.state.grid.items
+            }
         }
     }
 </script>

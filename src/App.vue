@@ -10,12 +10,25 @@
   import 'bootstrap-vue/dist/bootstrap-vue.css'
   import Header from './components/Header.vue'
   import Grid from './components/Grid.vue'
+  import { setInterval, clearInterval } from 'timers';
 
   export default {
     name: 'app',
     components: {
       Header,
       Grid
+    },
+    created() {
+      if(!this.interval) {
+        let self = this;
+        self.$store.dispatch('fetchDomains')
+        this.interval = setInterval(() => {
+          self.$store.dispatch('fetchDomains')
+        }, 15 * 1000)
+      }
+    },
+    destroyed() {
+      clearInterval(this.interval)
     }
   }
 </script>
