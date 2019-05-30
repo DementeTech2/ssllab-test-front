@@ -10,8 +10,9 @@
                 <span class="small">{{ revision.EndTime | fromNow }}</span>
             </b-col>
             <b-col sm="3" class="grade">
-                <b-spinner v-if="revision.SslGrade == ''" type="grow" variant="secondary" style="width: 1.5rem; height: 1.5rem;" small></b-spinner>
-                <span v-else>{{revision.SslGrade}}</span>
+                <b-spinner v-if="serverProgress < '100'" type="grow" variant="secondary" style="width: 1.5rem; height: 1.5rem;" small></b-spinner>
+                <span v-else-if="revision.SslGrade != ''">{{revision.SslGrade}}</span>
+                <span v-else title="Not determined">n.d.</span>
             </b-col>
         </b-row>
         <b-progress :variant="variantProg" :animated="serverProgress < 100" height="5px" :value="serverProgress" :max="100" ></b-progress>
@@ -31,6 +32,8 @@
         },
         computed: {
             serverProgress () {
+                if (this.revision.Status == 'error') 
+                    return 100
                 if (this.revision.Servers){
                     let total = this.revision.Servers.map(el => el.Progress).reduce((acc, elem) => acc + elem, 0)
                     return total / this.revision.Servers.length
@@ -39,19 +42,20 @@
             },
             variantProg() {
 
-                switch (this.revision.Status) {
-                    case 'in_progress':
-                        return 'info'
-                    case 'ready':
+                if (this.revision.Status == 'error') 
+                    return 'danger'
+
+                if (this.revision.Status == 'ready') {
+                    if (this.revision.SslGrade == '')
+                        return 'warning'
+                    else
                         return 'success'
-                    case 'error':
-                        return 'danger'
                 }
 
                 return 'info'
             },
             bgLogo(){
-                if (this.revision.Logo == '') {
+                if (this.revision.Logo == '' || this.revision.Logo == 'NOT FOUND') {
                     return '';
                 }
                 return 'linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 40%), url("'+this.revision.Logo+'")'
