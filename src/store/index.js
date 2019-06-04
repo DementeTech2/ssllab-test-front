@@ -30,6 +30,7 @@ const actions = {
                 if(res.status && res.status == 'error') {
                     commit("setGridError", res);
                 } else {
+                    commit("setGridError", false);
                     commit("setGrid", res);
                 }
             })
@@ -62,7 +63,7 @@ const mutations = {
         state.grid.error = err;
     },
     setGrid(state, items) {
-        state.grid.items = items.reverse();
+        state.grid.items = items;
     },
     analyzeDomainLoading(state, loading) {
         state.analyze.loading = loading;

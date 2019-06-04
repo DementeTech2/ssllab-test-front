@@ -32,12 +32,16 @@
         },
         computed: {
             serverProgress () {
+                if ( this.revision.Status == 'dns')
+                    return 0
                 if (this.revision.Status == 'error') 
                     return 100
-                if (this.revision.Servers){
+                if (this.revision.Servers && this.revision.Servers.length > 0){
                     let total = this.revision.Servers.map(el => el.Progress).reduce((acc, elem) => acc + elem, 0)
                     return total / this.revision.Servers.length
                 }
+                if (this.revision.Status == 'in_progress') 
+                    return 0
                 return 100
             },
             variantProg() {

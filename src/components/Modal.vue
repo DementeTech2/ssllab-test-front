@@ -19,7 +19,7 @@
                     <span v-else> Not logo found </span>  
                     <br/>
                 <strong>Is Down: </strong> {{ revision.IsDown ? "Seems down": "Looks fine" }} <br/>
-                <strong>Servers change: </strong> {{ revision.ServerChanged | str }} <br/>
+                <strong>Servers change: </strong> {{ revision.ServerChanged }} <br/>
                 <span v-if="isCompleted()">Analysis started at {{ revision.StartTime | format1 }} and {{ endTimeStr }}</span>
                 <span v-else>Analysis started {{ revision.StartTime | fromNow }}</span>
             </p>

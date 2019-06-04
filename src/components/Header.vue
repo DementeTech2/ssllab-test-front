@@ -8,8 +8,8 @@
                 <b-button variant="primary" type="submit" :disabled="disabled">Analyze</b-button>
             </b-form>
         </div>
-        <div class="col-sm text-right">
-          <h1>SSLLab Test</h1>
+        <div v-if="itemsLength" class="col-sm text-right">
+          <h1>SSLLab Test <small>by <a href="mailto:oscar.plaza.ceron@gmail.com">Oscar Plaza</a></small> </h1>
         </div>
       </div>
   </div>
@@ -31,6 +31,9 @@
         computed: {
             disabled () {
                 return this.$store.state.analyze.loading
+            },
+            itemsLength () {
+                return this.$store.state.grid.items.length
             }
         },
         methods: {
@@ -92,10 +95,11 @@
                         }
 
                         this.$bvToast.toast(toast.message, {
-                            toaster: "b-toaster-bottom-right",
+                            toaster: "b-toaster-top-center",
                             title: toast.title,
                             autoHideDelay: 5000,
-                            variant: toast.type
+                            variant: toast.type,
+                            solid: true
                         })
 
                         break;

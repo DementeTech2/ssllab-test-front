@@ -18,7 +18,7 @@ export default {
     },
     fetchDomains() {
         return this.getServiceEndpoint().then(endpoint => 
-            axios.get(`${endpoint}/api/domains?include_servers`)
+            axios.get(`${endpoint}/api/domains?include_servers`, { timeout: 10 * 1000})
                 .then(res => res.data)
                 .catch(err => ({
                     status: "error",
@@ -26,9 +26,9 @@ export default {
                 }))
         )
     }, 
-    analyzeDomain(domain) { // eslint-disable-line no-unused-vars
+    analyzeDomain(domain) {
         return this.getServiceEndpoint().then(endpoint => 
-            axios.get(`${endpoint}/api/analyze/${domain}?dont_wait`)
+            axios.get(`${endpoint}/api/analyze/${domain}?dont_wait`, { timeout: 10 * 1000})
                 .then(res => { 
                     return res.data
                 })
